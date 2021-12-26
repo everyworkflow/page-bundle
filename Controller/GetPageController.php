@@ -6,13 +6,12 @@
 
 declare(strict_types=1);
 
-namespace EveryWorkflow\PageBundle\Controller\Admin;
+namespace EveryWorkflow\PageBundle\Controller;
 
-use EveryWorkflow\CoreBundle\Annotation\EWFRoute;
+use EveryWorkflow\CoreBundle\Annotation\EwRoute;
 use EveryWorkflow\PageBundle\Repository\PageRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class GetPageController extends AbstractController
 {
@@ -23,16 +22,22 @@ class GetPageController extends AbstractController
         $this->pageRepository = $pageRepository;
     }
 
-    /**
-     * @EWFRoute(
-     *     admin_api_path="cms/page/{uuid}",
-     *     defaults={"uuid"="create"},
-     *     name="admin.cms.page.view",
-     *     methods="GET"
-     * )
-     * @throws \Exception
-     */
-    public function __invoke(string $uuid, Request $request): JsonResponse
+    #[EwRoute(
+        path: "cms/page/{uuid}",
+        name: 'cms.page.view',
+        methods: 'GET',
+        permissions: 'cms.page.view',
+        swagger: [
+            'parameters' => [
+                [
+                    'name' => 'uuid',
+                    'in' => 'path',
+                    'default' => 'create',
+                ]
+            ]
+        ]
+    )]
+    public function __invoke(string $uuid = 'create'): JsonResponse
     {
         $data = [];
 
@@ -45,6 +50,6 @@ class GetPageController extends AbstractController
 
         $data['data_form'] = $this->pageRepository->getForm()->toArray();
 
-        return (new JsonResponse())->setData($data);
+        return new JsonResponse($data);
     }
 }

@@ -15,14 +15,11 @@ use MongoDB\UpdateResult;
 interface PageRepositoryInterface extends BaseEntityRepositoryInterface
 {
     /**
-     * @param PageEntityInterface $entity
-     * @param array $otherFilter
-     * @param array $otherOptions
-     * @return UpdateResult
+     * @throws \Exception
      */
-    public function savePageEntity(
+    public function savePage(
         PageEntityInterface $entity,
         array $otherFilter = [],
         array $otherOptions = []
-    ): UpdateResult;
+    ): PageEntityInterface;
 }

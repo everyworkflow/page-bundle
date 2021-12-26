@@ -6,13 +6,13 @@
 
 declare(strict_types=1);
 
-namespace EveryWorkflow\PageBundle\Migration;
+namespace EveryWorkflow\PageBundle\Seeder;
 
 use EveryWorkflow\PageBundle\Block\HomePageBlockInterface;
 use EveryWorkflow\PageBundle\Repository\PageRepositoryInterface;
-use EveryWorkflow\MongoBundle\Support\MigrationInterface;
+use EveryWorkflow\MongoBundle\Support\SeederInterface;
 
-class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterface
+class Mongo_2021_12_16_07_39_20_Page_Data_Seeder implements SeederInterface
 {
     protected PageRepositoryInterface $pageRepository;
     protected HomePageBlockInterface $homePageBlock;
@@ -25,9 +25,9 @@ class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterfac
         $this->homePageBlock = $homePageBlock;
     }
 
-    public function migrate(): bool
+    public function seed(): bool
     {
-        $page = $this->pageRepository->getNewEntity([
+        $page = $this->pageRepository->create([
             'title' => 'Home',
             'url_path' => 'home',
             'status' => 'enable',
@@ -40,9 +40,9 @@ class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterfac
             'meta_description' => 'EveryWorkflow meta description text',
             'meta_keyword' => 'every, workflow, everyworkflow, eCommerce, data platform, nepal',
         ]);
-        $this->pageRepository->savePageEntity($page);
+        $this->pageRepository->savePage($page);
 
-        $page = $this->pageRepository->getNewEntity([
+        $page = $this->pageRepository->create([
             'title' => 'About',
             'url_path' => 'about',
             'status' => 'enable',
@@ -55,9 +55,9 @@ class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterfac
             'meta_description' => 'EveryWorkflow meta description text',
             'meta_keyword' => 'every, workflow, everyworkflow, eCommerce, data platform, nepal',
         ]);
-        $this->pageRepository->savePageEntity($page);
+        $this->pageRepository->savePage($page);
 
-        $page = $this->pageRepository->getNewEntity([
+        $page = $this->pageRepository->create([
             'title' => 'Contact',
             'url_path' => 'contact',
             'status' => 'enable',
@@ -70,9 +70,9 @@ class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterfac
             'meta_description' => 'EveryWorkflow meta description text',
             'meta_keyword' => 'every, workflow, everyworkflow, eCommerce, data platform, nepal',
         ]);
-        $this->pageRepository->savePageEntity($page);
+        $this->pageRepository->savePage($page);
 
-        $page = $this->pageRepository->getNewEntity([
+        $page = $this->pageRepository->create([
             'title' => 'Privacy policy',
             'url_path' => 'privacy-policy',
             'status' => 'enable',
@@ -101,9 +101,9 @@ class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterfac
             'meta_description' => 'EveryWorkflow meta description text',
             'meta_keyword' => 'every, workflow, everyworkflow, eCommerce, data platform, nepal',
         ]);
-        $this->pageRepository->savePageEntity($page);
+        $this->pageRepository->savePage($page);
 
-        $page = $this->pageRepository->getNewEntity([
+        $page = $this->pageRepository->create([
             'title' => 'Terms of use',
             'url_path' => 'terms-of-use',
             'status' => 'enable',
@@ -132,7 +132,7 @@ class Mongo_2021_01_03_02_00_01_Page_Data_Migration implements MigrationInterfac
             'meta_description' => 'EveryWorkflow meta description text',
             'meta_keyword' => 'every, workflow, everyworkflow, eCommerce, data platform, nepal',
         ]);
-        $this->pageRepository->savePageEntity($page);
+        $this->pageRepository->savePage($page);
 
         return self::SUCCESS;
     }

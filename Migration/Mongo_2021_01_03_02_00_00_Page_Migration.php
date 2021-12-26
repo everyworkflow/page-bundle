@@ -34,14 +34,13 @@ class Mongo_2021_01_03_02_00_00_Page_Migration implements MigrationInterface
     public function migrate(): bool
     {
         /** @var EntityDocument $pageEntity */
-        $pageEntity = $this->entityRepository->getDocumentFactory()
-            ->create(EntityDocument::class);
+        $pageEntity = $this->entityRepository->create();
         $pageEntity
             ->setName('Page')
             ->setCode($this->pageRepository->getEntityCode())
             ->setClass(PageEntity::class)
             ->setStatus(EntityDocument::STATUS_ENABLE);
-        $this->entityRepository->save($pageEntity);
+        $this->entityRepository->saveOne($pageEntity);
 
         $attributeData = [
             [
@@ -91,13 +90,12 @@ class Mongo_2021_01_03_02_00_00_Page_Migration implements MigrationInterface
         $sortOrder = 5;
         foreach ($attributeData as $item) {
             $item['sort_order'] = $sortOrder++;
-            $attribute = $this->attributeRepository->getDocumentFactory()
-                ->createAttribute($item);
-            $this->attributeRepository->save($attribute);
+            $attribute = $this->attributeRepository->create($item);
+            $this->attributeRepository->saveOne($attribute);
         }
 
         $indexKeys = [];
-        foreach ($this->pageRepository->getIndexNames() as $key) {
+        foreach ($this->pageRepository->getIndexKeys() as $key) {
             $indexKeys[$key] = 1;
         }
         $this->pageRepository->getCollection()

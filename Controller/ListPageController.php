@@ -6,9 +6,9 @@
 
 declare(strict_types=1);
 
-namespace EveryWorkflow\PageBundle\Controller\Admin;
+namespace EveryWorkflow\PageBundle\Controller;
 
-use EveryWorkflow\CoreBundle\Annotation\EWFRoute;
+use EveryWorkflow\CoreBundle\Annotation\EwRoute;
 use EveryWorkflow\PageBundle\DataGrid\PageDataGridInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,18 +24,18 @@ class ListPageController extends AbstractController
         $this->pageDataGrid = $pageDataGrid;
     }
 
-    /**
-     * @EWFRoute(
-     *     admin_api_path="cms/page",
-     *     name="admin.cms.page",
-     *     priority=10,
-     *     methods="GET"
-     * )
-     */
+    #[EwRoute(
+        path: "cms/page",
+        name: 'cms.page',
+        priority: 10,
+        methods: 'GET',
+        permissions: 'cms.page.list',
+        swagger: true
+    )]
     public function __invoke(Request $request): JsonResponse
     {
         $dataGrid = $this->pageDataGrid->setFromRequest($request);
 
-        return (new JsonResponse())->setData($dataGrid->toArray());
+        return new JsonResponse($dataGrid->toArray());
     }
 }

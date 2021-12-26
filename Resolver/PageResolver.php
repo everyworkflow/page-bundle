@@ -28,6 +28,6 @@ class PageResolver implements PageResolverInterface
     public function resolve($url, Request $request): JsonResponse
     {
         $pageDocument = $this->pageRepository->findOne(['url_path' => $url]);
-        return (new JsonResponse())->setData($pageDocument->toArray());
+        return new JsonResponse($pageDocument->toArray());
     }
 }

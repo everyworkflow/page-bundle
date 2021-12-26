@@ -10,65 +10,43 @@ namespace EveryWorkflow\PageBundle\Repository;
 
 use EveryWorkflow\PageBundle\Entity\PageEntity;
 use EveryWorkflow\PageBundle\Entity\PageEntityInterface;
-use EveryWorkflow\CoreBundle\Annotation\RepoDocument;
-use EveryWorkflow\CoreBundle\Helper\CoreHelperInterface;
-use EveryWorkflow\EavBundle\Factory\EntityFactoryInterface;
-use EveryWorkflow\EavBundle\Form\EntityAttributeFormInterface;
-use EveryWorkflow\EavBundle\Repository\AttributeRepositoryInterface;
 use EveryWorkflow\EavBundle\Repository\BaseEntityRepository;
+use EveryWorkflow\EavBundle\Support\Attribute\EntityRepositoryAttribute;
 use EveryWorkflow\MongoBundle\Document\HelperTrait\StatusHelperTraitInterface;
-use EveryWorkflow\MongoBundle\Factory\DocumentFactoryInterface;
-use EveryWorkflow\MongoBundle\Model\MongoConnectionInterface;
 use EveryWorkflow\UrlRewriteBundle\Document\UrlRewriteDocumentInterface;
 use EveryWorkflow\UrlRewriteBundle\Repository\UrlRewriteRepositoryInterface;
-use MongoDB\UpdateResult;
+use Symfony\Contracts\Service\Attribute\Required;
 
-/**
- * @RepoDocument(doc_name=PageEntity::class)
- */
+#[EntityRepositoryAttribute(
+    documentClass: PageEntity::class,
+    primaryKey: 'url_path',
+    entityCode: 'page'
+)]
 class PageRepository extends BaseEntityRepository implements PageRepositoryInterface
 {
-    protected string $collectionName = 'page_entity_collection';
-    protected array $indexNames = ['url_path'];
-    protected string $entityCode = 'page';
-
     protected UrlRewriteRepositoryInterface $urlRewriteRepository;
 
-    public function __construct(
-        UrlRewriteRepositoryInterface $urlRewriteRepository,
-        MongoConnectionInterface $mongoConnection,
-        DocumentFactoryInterface $documentFactory,
-        CoreHelperInterface $coreHelper,
-        EntityFactoryInterface $entityFactory,
-        AttributeRepositoryInterface $attributeRepository,
-        EntityAttributeFormInterface $entityAttributeForm,
-        $entityAttributes = []
-    ) {
-        parent::__construct(
-            $mongoConnection,
-            $documentFactory,
-            $coreHelper,
-            $entityFactory,
-            $attributeRepository,
-            $entityAttributeForm,
-            $entityAttributes
-        );
+    #[Required]
+    public function setUrlRewriteRepository(UrlRewriteRepositoryInterface $urlRewriteRepository): self
+    {
         $this->urlRewriteRepository = $urlRewriteRepository;
+
+        return $this;
     }
 
     /**
      * @throws \Exception
      */
-    public function savePageEntity(
+    public function savePage(
         PageEntityInterface $entity,
         array $otherFilter = [],
         array $otherOptions = []
-    ): UpdateResult {
+    ): PageEntityInterface {
         $urlPath = $entity->getData('url_path');
         if ($urlPath) {
-            $urlRewrite = $this->urlRewriteRepository->getNewDocument([
+            $urlRewrite = $this->urlRewriteRepository->create([
                 UrlRewriteDocumentInterface::KEY_URL => $entity->getData('url_path'),
-                UrlRewriteDocumentInterface::KEY_TYPE => $this->entityCode,
+                UrlRewriteDocumentInterface::KEY_TYPE => $this->getEntityCode(),
                 UrlRewriteDocumentInterface::KEY_TYPE_KEY => $entity->getData('url_path'),
                 StatusHelperTraitInterface::KEY_STATUS => StatusHelperTraitInterface::STATUS_ENABLE,
             ]);
@@ -81,8 +59,8 @@ class PageRepository extends BaseEntityRepository implements PageRepositoryInter
             if ($entity->getData('meta_keyword')) {
                 $urlRewrite->setData('meta_keyword', $entity->getData('meta_keyword'));
             }
-            $this->urlRewriteRepository->save($urlRewrite);
+            $this->urlRewriteRepository->saveOne($urlRewrite);
         }
-        return $this->saveEntity($entity, $otherFilter, $otherOptions);
+        return $this->saveOne($entity, $otherFilter, $otherOptions);
     }
 }
