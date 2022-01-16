@@ -89,7 +89,7 @@ class SavePageController extends AbstractController
         $item = $this->pageRepository->saveOne($item);
 
         return new JsonResponse([
-            'message' => 'Successfully saved changes.',
+            'detail' => 'Successfully saved changes.',
             'item' => $item->toArray(),
         ]);
     }
