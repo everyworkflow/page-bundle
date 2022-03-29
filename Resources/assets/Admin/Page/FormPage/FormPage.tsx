@@ -49,7 +49,7 @@ const FormPage = () => {
 
         const fetchItem = async () => {
             try {
-                const response: any = await Remote.get('/cms/page/' + uuid);
+                const response: any = await Remote.get('/cms/page/' + uuid + '?for=data-form');
                 handleResponse(response);
             } catch (error: any) {
                 AlertAction({
