@@ -19,7 +19,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 #[EntityRepositoryAttribute(
     documentClass: PageEntity::class,
-    primaryKey: 'url_path',
+    primaryKey: '_id',
     entityCode: 'page'
 )]
 class PageRepository extends BaseEntityRepository implements PageRepositoryInterface

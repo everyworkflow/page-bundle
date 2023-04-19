@@ -94,12 +94,8 @@ class Mongo_2021_01_03_02_00_00_Page_Migration implements MigrationInterface
             $this->attributeRepository->saveOne($attribute);
         }
 
-        $indexKeys = [];
-        foreach ($this->pageRepository->getIndexKeys() as $key) {
-            $indexKeys[$key] = 1;
-        }
         $this->pageRepository->getCollection()
-            ->createIndex($indexKeys, ['unique' => true]);
+            ->createIndex(['url_path'], ['unique' => true]);
 
         return self::SUCCESS;
     }
